@@ -22,10 +22,39 @@ Regra da casa: hipótese vira regra quando tiver evidência (data + n).
 - Teto de duração: em Tibia ≤14s ganhou; LoL teamfight pode pedir mais —
   MEDIR antes de copiar.
 
-## Peculiaridades já conhecidas do nicho
+## Discovery "melhores das 24h" — técnica VALIDADA (06/07/2026)
 
-- Categoria GIGANTE global: discovery TEM que filtrar `languages:[PT]` no GQL
-  (senão top-100 vem coreano/gringo). Oferta PT medida 06/07/2026: 689
-  views/24h, 100 clips, 66 streamers — matéria-prima ok.
+Categoria GIGANTE global: sem filtro de idioma o top-100 vem coreano/gringo.
+O GQL público da Twitch (Client-Id do site, sem credencial) aceita filtro de
+idioma no criteria. Query que funciona:
+
+```graphql
+query($game: String!, $first: Int!) {
+  game(name: $game) {          # "League of Legends"
+    clips(criteria: {period: LAST_DAY, sort: VIEWS_DESC, languages: [PT]},
+          first: $first) {     # cap 100 por query (200 retorna vazio)
+      edges { node {
+        slug title viewCount durationSeconds createdAt
+        broadcaster { displayName }
+        video { id lengthSeconds }   # + videoOffsetSeconds = pad de VOD
+        videoOffsetSeconds
+      } }
+    }
+  }
+}
+```
+
+- Endpoint: `POST https://gql.twitch.tv/gql`, header
+  `Client-Id: kimne78kx3ncx6brgo4mv6wki5h1ko` (o do web client, público).
+- `languages` é ENUM (PT sem aspas). Helix (API oficial) NÃO tem esse filtro
+  de idioma em clips — só o GQL.
+- Evidência 06/07: 97 clips PT/24h, 66 streamers, CBLOL oficial no meio
+  (FURIA vs T1). Sem o filtro: top-100 sem nenhum clip PT.
+
+## Outras peculiaridades
+
 - Concorrência de canais de corte de LoL BR é alta — diferencial precisa ser
   velocidade (clip do dia no dia) + seleção de streamer.
+- Canal oficial CBLOL clipa jogo competitivo — clips de esports têm regra de
+  uso própria da Riot (checar antes de repostar jogo oficial; live de
+  streamer é outro caso).
