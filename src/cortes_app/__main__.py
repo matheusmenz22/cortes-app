@@ -7,6 +7,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Callable, Sequence
 
 from cortes_app.sources.base import ClipSource
@@ -19,11 +20,21 @@ def _twitch_source(language: str) -> ClipSource:
     return TwitchClipsSource(post=httpx_transport(), language=language)
 
 
+def _force_utf8_output() -> None:
+    """No Windows o console padrão é cp1252 e quebra em emoji/acento dos títulos
+    da Twitch. Reconfigura stdout/stderr p/ UTF-8 (no-op se já for/não suportar)."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(
     argv: Sequence[str] | None = None,
     *,
     source_factory: SourceFactory = _twitch_source,
 ) -> int:
+    _force_utf8_output()
     parser = argparse.ArgumentParser(
         prog="cortes-app", description="Gerador de cortes verticais a partir da Twitch."
     )
