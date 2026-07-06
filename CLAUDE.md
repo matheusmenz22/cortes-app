@@ -54,6 +54,34 @@ Pergunte: "isso é código, conhecimento geral, ou peculiaridade de UM nicho?"
 - **NUNCA subir regra sem data + evidência** (medição com n, ou
   sintoma→causa→solução vivido). Opinião não entra nem com boa intenção.
 
+## Protocolo de sincronização (OBRIGATÓRIO — somos 2 pessoas, 2 casas)
+
+O outro pode ter subido algo há 5 minutos. Claude: NUNCA edite nada neste repo
+sem antes verificar o estado remoto.
+
+**Antes de COMEÇAR qualquer mudança (sempre, mesmo em sessão longa):**
+
+```
+git fetch origin
+git status -sb            # atrás de origin/main? → git pull --rebase origin main
+gh pr list --state open   # PR aberto do parceiro tocando o MESMO arquivo?
+```
+
+- Atrás do remoto → `git pull --rebase` ANTES de criar branch.
+- PR aberto do parceiro toca o arquivo que você ia mudar → NÃO edita.
+  Comenta no PR dele ou espera o merge. Editar por cima = conflito garantido.
+- Mesmo assunto já tem PR → contribui NO PR existente, não abre duplicado.
+
+**Antes de PUSH/PR:** `git fetch origin && git rebase origin/main` — resolve
+conflito local, nunca empurra branch desatualizada.
+
+**Higiene que evita 90% dos conflitos:**
+- PR pequeno, mergeado RÁPIDO (< 2 dias de vida; branch velha = conflito).
+- 1 PR = 1 assunto = poucos arquivos.
+- CLAUDE.md raiz é o arquivo mais compartilhado: mudou ele, merge no mesmo dia.
+- O hook de sessão (`.claude/settings.json` do repo) já mostra estado do
+  remoto e PRs abertos ao abrir o Claude Code — LER esse output, não ignorar.
+
 ## Fluxo git (resumo operacional pro Claude)
 
 ```
