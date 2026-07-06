@@ -58,9 +58,14 @@ Corrige o crop automático errado sem sair da fila.
   arrasto. O que se vê na prévia é o corte final, sem surpresa pós-render.
 - **Salvar não trava**: fecha o editor na hora, re-renderiza em background (ver §5) e o
   usuário segue para o próximo card.
-- **Spec persistido** (`crop_json`): JSON com frações 0–1 do source (`cx, cy, w, h` de cada
-  caixa) + flags (posição/tamanho da cam, legenda). Reabrir o editor recarrega o último
-  spec — as caixas voltam onde estavam.
+- **Spec persistido** (`crop_json`): JSON com frações 0–1 do source de cada caixa + flags
+  (posição/tamanho da cam, legenda). Semântica das frações: `cx, cy` são o **CENTRO** da
+  caixa (não o canto superior-esquerdo); `w`/`h` são frações de largura/altura do source.
+  Reabrir o editor recarrega o último spec — as caixas voltam onde estavam.
+- **Tamanho de cam manual SOBREPÕE o default**: o tamanho de painel escolhido no editor
+  (fração da altura final, ex.: 0.2/0.3/0.4) vence o default fixo de 40% do render
+  automático. O default só vale quando NÃO há escolha manual válida (render aceita uma
+  faixa sã, ex.: 0.10–0.60; fora dela cai no default).
 - **`crop_json` é dado de treino**: cada correção manual é um exemplo rotulado
   (frame de entrada → enquadramento correto) para calibrar o detector automático de
   webcam/ação. Meta: auto acertar >90% e o humano só confirmar.
@@ -120,3 +125,25 @@ um jogo cair no canal de outro.
   fila conforme renderizam.
 - **Controle manual do ritmo**: enquanto a qualidade não estiver validada, busca é manual
   (botão), não timer. Timer automático só depois do gate de qualidade estar provado.
+
+## 6. Fechando o loop de calibração
+
+As decisões da esteira (aprovado/negado + motivo) alimentam um relatório periódico que
+mede onde o auto-gate (curador + QA) discorda do olho humano:
+
+- **Falso-positivo do gate** = clip que o automático APROVOU e o humano NEGOU. É o sinal
+  principal: cada um aponta a dimensão frouxa do gate.
+- **Mapa palavra-chave → dimensão**: o motivo de negação (texto livre + chips) é
+  classificado por palavra-chave na dimensão a afinar — ex.: "crop/esquadro/ui" → CROP
+  (enquadramento), "webcam/rosto" → WEBCAM (detector), "ação/chato/nada acontece" →
+  CURADOR (gate de momento), "título/mentir/legenda" → TÍTULO (prompt de honestidade),
+  "fala/meio/corta" → CORTE (trim), "áudio" → ÁUDIO (gate de áudio/loudnorm),
+  "vocab/tradu" → VOCAB (termos do nicho). Sem match → OUTRO (revisar à mão).
+- **Relatório**: taxa de aprovação geral + contagem de recusas POR DIMENSÃO (o topo da
+  lista é o que afinar primeiro) + detalhe por clip (score que o auto-gate deu vs motivo
+  do humano — expõe exatamente onde o gate foi frouxo).
+- **Cadência**: rodar 1x/semana, ou ao acumular ~20+ decisões. Afinar a dimensão do topo
+  (prompt/threshold), redeploy, medir de novo na semana seguinte.
+- **Meta**: concordância humano-vs-auto **>90%** sustentada antes de confiar mais no
+  automático (humano vira confirmação, não triagem). Abaixo disso, o auto não decide
+  sozinho.

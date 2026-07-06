@@ -28,6 +28,8 @@ Uma passada low-res no clip inteiro: reescala p/ 256px de largura, grayscale, ~2
 
 **Teto: `clip_max = 14s`, cortando da FRENTE** (preserva o fim = payoff). Dado (analytics 28d, n=72, confound de título controlado): clips <=14s = mediana 1165 views / 55% retenção vs >=20s = 970 / 46%. **AVISO: medido em Tibia** (mundo anima constante → janela quase nunca cai sozinha; 37/72 batiam no cap antigo de 25s). Validar o teto no nicho antes de assumir — LoL tem picos mais discretos (teamfight vs lane). Piso: `dur_min = 8s` (Short curto demais não segura). Sem movimento nenhum → clip inteiro, sem trim.
 
+**Nota sobre o piso de 8s:** o piso vale pra ELEGIBILIDADE do clip BRUTO (filtro na duração reportada pela Twitch, antes de baixar). No trim, a janela de ação só re-expande até o piso com material REAL do source (puxa início/fim); NUNCA estende além do arquivo (nada de freeze/slow-mo pra "completar" 8s) — se o source real for mais curto, a janela sai <8s e sobe assim mesmo. Curto ganha (é o mesmo dado do teto 14s); não inflar janela artificialmente pra bater piso.
+
 ## 3. Layouts
 
 Saída sempre **1080x1920**. Escala com `force_original_aspect_ratio=increase` + crop final (preenche o painel sem barra) e `flags=lanczos`.

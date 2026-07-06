@@ -31,9 +31,13 @@ Decisões de ordem, com o porquê:
   JANELA que vai ao ar. Gerar copy só do título da Twitch produzia metadado sem
   relação com o vídeo (vivido, jun/2026). E não gastar quota com clip que o
   gate de áudio vai derrubar.
-- **Curador ANTES de render+QA.** Se o LLM (vendo o vídeo) diz "sem momento,
-  filler", pula sem pagar render nem QA. Motivação: view da Twitch valida
-  interesse, não momento (ver `skills/curadoria-cortes-twitch.md`).
+- **São DOIS gates de curadoria, em momentos diferentes (não é contradição
+  com a skill):** (1) curador-LLM PRÉ-render — roda junto do caption, vendo
+  frames+áudio do SOURCE trimado; se diz "filler, sem momento", pula sem pagar
+  render nem QA; (2) curadoria visual PÓS-render na FILA
+  (`skills/curadoria-cortes-twitch.md`) — agente assiste frames do RENDER
+  final antes da aprovação humana (pega defeito de render e lixo que passou).
+  Quem roda sem LLM usa só o gate (2).
 - **QA no arquivo FINAL renderizado**, não no source: os defeitos que geraram
   revolta (22/06 — crop torto, webcam não dividida, corte no meio da fala,
   título-mentira) só aparecem no render.
@@ -42,8 +46,10 @@ Decisões de ordem, com o porquê:
 
 - GQL público da Twitch (Client-Id do próprio site — está no JS, sem registrar
   app): `game(name).clips(criteria:{period:LAST_DAY, sort:VIEWS_DESC,
-  languages:[PT]})`. Fallback: Helix oficial (precisa de creds; NÃO filtra
-  idioma de clip — o filtro só existe no GQL).
+  languages:[PT]})`. Fallback: Helix oficial — entra SÓ quando o GQL falha E
+  existem creds configuradas (sem creds, o erro do GQL é terminal e avisa).
+  Helix NÃO filtra idioma de clip — o filtro só existe no GQL; operação normal
+  é 100% GQL, Helix é seguro-reserva pra quando a Twitch mudar o schema.
 - `first=100`: o GQL capa em 100 por query (200 retorna vazio). 100 em vez de
   50 dobra o pool — folga p/ dedup + ~1/3 de mudos não secarem a fila em
   cadência alta (17/dia).
@@ -73,8 +79,23 @@ Decisões de ordem, com o porquê:
 | `error` | exceção em qualquer etapa (motivo gravado) | reprocessável manualmente |
 | `rendered` | passou todos os gates automáticos; entra na esteira | não |
 | `denied` | humano negou na esteira, COM motivo gravado (vira dado p/ calibrar o auto) | sim |
-| `scheduled` | humano aprovou → upload private + publishAt | não |
+| `approved` | humano aprovou mas o upload ficou pra depois (cap/quota do dia estourado no fluxo em lote, ou falha de upload a re-tentar) | não |
+| `scheduled` | upload feito: private + publishAt gravado no YouTube | não |
 | `published` | YouTube publicou no horário agendado | sim |
+
+**Dois caminhos do aprovar (evita confusão):** o botão Aprovar da esteira
+agenda NA HORA — upload imediato no próximo slot livre (a quota é consumida
+nesse momento; se os slots de hoje acabaram, o publishAt cai no dia seguinte
+automaticamente). O fluxo em LOTE (agendar todos os aprovados de uma vez)
+aplica cap de `posts_per_day` por execução; o excedente fica `approved` e o
+lote do dia seguinte pega. Mesmo destino, gatilhos diferentes.
+
+**LLM é opcional — mas escolha explícita:** existe modo TÍTULO CRU sem LLM
+nenhum (foi o "modo treino" do sistema original: título da Twitch sanitizado +
+gate humano; zero quota). Nesse modo não existe `deferred` por caption. O
+`allow_fallback=False` vale só no modo LLM: se você OPTOU por título gerado,
+LLM caiu = adia, nunca degrada silenciosamente pro cru (título-lixo = ~4x
+menos, §6). Não deixar o modo "meio a meio" acontecer por acidente.
 
 **Por que `deferred` NÃO conta como visto:** o adiamento é sempre falha de
 INFRA (quota do LLM), nunca veredito sobre o clip. Publicar com o fallback
