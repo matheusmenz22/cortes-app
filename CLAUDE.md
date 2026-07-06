@@ -1,14 +1,94 @@
-# cortes-app — Conhecimento GERAL (todos os nichos)
+# cortes-app — CLAUDE.md
 
-Regras que valem pra QUALQUER nicho de corte. Lido automaticamente pelo Claude
-Code na raiz do repo. Peculiaridade de nicho vai em `nichos/<nicho>/`.
+Este arquivo é lido automaticamente pelo Claude Code de QUALQUER máquina que
+abra este repo (Gustavo e Matheus). Duas partes: (1) REGRAS DE OPERAÇÃO — como
+o Claude deve se comportar ao mexer aqui; (2) CONHECIMENTO GERAL — o que vale
+pra todos os nichos.
 
-**Convenção de arquivamento (CRÍTICO):**
-- Vale pra 2+ nichos → este arquivo.
-- Só do nicho → `nichos/<nicho>/` (AGENT.md = regras do agente; conhecimento.md
-  = peculiaridades; bugs.md = anti-regressão).
-- TODA regra entra com **data + evidência** (dado, n, ou sintoma→causa→solução).
-  Regra sem evidência é opinião — não entra. PR do parceiro se valida com dado.
+---
+
+# PARTE 1 — REGRAS DE OPERAÇÃO (Claude: siga SEMPRE)
+
+## Donos
+
+| Área | Dono | GitHub |
+|---|---|---|
+| `nichos/tibia/` | Gustavo | guborges |
+| `nichos/league-of-legends/` | Matheus | matheusmenz22 |
+| `src/`, `tests/` (código do app) | Matheus (lead) | matheusmenz22 |
+| `CLAUDE.md` (este arquivo) | os dois | — |
+
+**Nicho novo = quem cria é o dono.** Registrar na tabela acima no mesmo PR.
+
+## Roteamento: onde cada coisa entra (decidir ANTES de escrever)
+
+Pergunte: "isso é código, conhecimento geral, ou peculiaridade de UM nicho?"
+
+1. **Código do app** → `src/` + teste em `tests/` (TDD, ver CONTRIBUTING.md).
+   Nunca subir código sem `pytest` e `ruff check .` passando local.
+2. **Regra que vale pra 2+ nichos** → PARTE 2 deste arquivo, na seção certa.
+3. **Peculiaridade de 1 nicho** → `nichos/<nicho>/AGENT.md`.
+4. **Bug resolvido** → `nichos/<nicho>/bugs.md` (sintoma → causa → solução),
+   NO MESMO DIA. Se o bug é do motor/genérico, vai na seção "Armadilhas
+   técnicas" da PARTE 2.
+5. **Hipótese sem dado** → entra marcada `[a validar]` no nicho. NUNCA entra
+   como regra.
+6. **Nicho novo** → copiar `nichos/_TEMPLATE.md` pra `nichos/<slug>/AGENT.md`
+   (slug kebab-case, ex: `grand-theft-auto-v`), criar `bugs.md` vazio, se
+   declarar dono.
+7. **Na dúvida de onde vai** → abre o PR do jeito que achar e marca o parceiro
+   no texto explicando a dúvida. NÃO adivinha em silêncio.
+
+## Proibições absolutas
+
+- **NUNCA commitar segredo**: `.env`, token, API key, client_secret, cookie,
+  URL com credencial. O repo é visível pro parceiro e (hoje) PÚBLICO. Se
+  escapar segredo: revogar a credencial NA HORA (rebase não salva — o GitHub
+  guarda histórico de PR).
+- **NUNCA push direto na `main`** — sempre branch + PR (main é protegida).
+- **NUNCA editar o nicho do OUTRO dono direto** — mudança em nicho alheio só
+  via PR com evidência no corpo, e o dono aprova. Corrigir typo pode; mudar
+  regra não.
+- **NUNCA apagar/enfraquecer regra com evidência** sem PR explicando por que a
+  evidência não vale mais (dado novo > dado velho, mas mostra o dado).
+- **NUNCA subir regra sem data + evidência** (medição com n, ou
+  sintoma→causa→solução vivido). Opinião não entra nem com boa intenção.
+
+## Fluxo git (resumo operacional pro Claude)
+
+```
+git switch -c <tipo>/<descricao-curta>   # tipo: feat|fix|docs|refactor
+# ... mudanças ...
+pytest && ruff check .                    # só se tocou src/ ou tests/
+git commit                                # conventional commit (ver .gitmessage)
+git push -u origin <branch>
+gh pr create                              # corpo: o quê + evidência + onde encaixa
+```
+
+- 1 PR = 1 assunto. Conhecimento de nicho + refactor de código = 2 PRs.
+- Commit de conhecimento: prefixo `docs:`. Código: `feat:`/`fix:`.
+
+## Formato de regra de conhecimento
+
+```
+- **Título curto da regra.** O que fazer/não fazer. Evidência: o que foi
+  medido/vivido, com n se houver. (dd/mm/aaaa)
+```
+
+Bug em `bugs.md`:
+
+```
+## título curto
+**Sintoma:** o que se vê.
+**Causa:** raiz real (não o chute inicial).
+**Solução:** o que resolveu + como validar. (dd/mm/aaaa)
+```
+
+---
+
+# PARTE 2 — Conhecimento GERAL (todos os nichos)
+
+Peculiaridade de nicho vai em `nichos/<nicho>/`. Aqui só o que vale pra 2+.
 
 Fonte inicial: 1 mês de produção real do canal Exiva Clips (Tibia, jun-jul/2026),
 pipeline full-auto com esteira de aprovação. n indicado por regra.
