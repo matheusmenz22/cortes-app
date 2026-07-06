@@ -1,0 +1,10 @@
+# Normaliza quebras de linha entre colaboradores (LF no repo)
+* text=auto eol=lf
+
+# Binários (nunca normalizar)
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.mkv binary
+*.wav binary
+*.mp3 binary

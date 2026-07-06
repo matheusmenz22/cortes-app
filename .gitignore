@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Ambientes
+.venv/
+venv/
+.env
+
+# Caches de ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Mídia / dados gerados (nunca versionar)
+input/
+output/
+data/
+*.mp4
+*.mkv
+*.mov
+*.wav
+*.mp3
