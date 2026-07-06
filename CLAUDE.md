@@ -33,6 +33,9 @@ Pergunte: "isso é código, conhecimento geral, ou peculiaridade de UM nicho?"
    técnicas" da PARTE 2.
 5. **Hipótese sem dado** → entra marcada `[a validar]` no nicho. NUNCA entra
    como regra.
+5b. **Procedimento/skill que vale pra 2+ nichos** → `skills/<nome>.md`
+   (ex: `skills/curadoria-cortes-twitch.md`). Skill declara o ESCOPO no topo
+   (Twitch vs YouTube são skills separadas — problemas diferentes).
 6. **Nicho novo** → copiar `nichos/_TEMPLATE.md` pra `nichos/<slug>/AGENT.md`
    (slug kebab-case, ex: `grand-theft-auto-v`), criar `bugs.md` vazio, se
    declarar dono.
