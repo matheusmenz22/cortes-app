@@ -52,3 +52,20 @@ def test_discover_forwards_args():
 def test_discover_empty(capsys):
     cli.main(["discover", "X"], source_factory=lambda _lang: FakeSource([]))
     assert "nenhum clip" in capsys.readouterr().out
+
+
+def test_discover_handles_emoji_title(capsys):
+    """Título com emoji não pode derrubar a CLI (Windows/cp1252)."""
+    clip = RawClip(
+        id="e",
+        url="https://clips.twitch.tv/e",
+        title="GG‼ pentakill 🔥",
+        creator="x",
+        game="LoL",
+        duration_s=10.0,
+        view_count=5,
+        created_at="2026-07-06T00:00:00Z",
+    )
+    rc = cli.main(["discover", "LoL"], source_factory=lambda _lang: FakeSource([clip]))
+    assert rc == 0
+    assert "pentakill" in capsys.readouterr().out
