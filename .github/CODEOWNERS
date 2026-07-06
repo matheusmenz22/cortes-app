@@ -1,0 +1,13 @@
+# Dono revisa o que é seu. Com branch protection "Require review from Code
+# Owners" ligado, o GitHub BLOQUEIA merge em área alheia sem aprovação do dono.
+# (Ligar em: Settings > Branches > main > Require review from Code Owners)
+
+/nichos/tibia/               @guborges
+/nichos/league-of-legends/   @matheusmenz22
+/src/                        @matheusmenz22
+/tests/                      @matheusmenz22
+
+# conhecimento compartilhado e regras do jogo: os dois
+/CLAUDE.md                   @guborges @matheusmenz22
+/.github/                    @guborges @matheusmenz22
+/.claude/                    @guborges @matheusmenz22
