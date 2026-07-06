@@ -1,4 +1,5 @@
 """TDD do domínio de corte de vácuos (puro, sem ffmpeg)."""
+
 import pytest
 
 from cortes_app.domain.silence import Interval, Word, keep_intervals
@@ -15,9 +16,13 @@ class TestInterval:
 
 class TestKeepIntervals:
     def test_removes_long_gap(self):
-        words = [w(0.0, 0.5), w(0.5, 1.0),   # bloco de fala 1
-                 w(3.0, 3.5), w(3.5, 4.0),   # bloco 2 (pausa 1.0->3.0 = 2s)
-                 w(4.3, 5.0)]                # pausa 4.0->4.3 = 0.3s (curta, fica)
+        words = [
+            w(0.0, 0.5),
+            w(0.5, 1.0),  # bloco de fala 1
+            w(3.0, 3.5),
+            w(3.5, 4.0),  # bloco 2 (pausa 1.0->3.0 = 2s)
+            w(4.3, 5.0),
+        ]  # pausa 4.0->4.3 = 0.3s (curta, fica)
         keep = keep_intervals(words, 0.0, 5.0, min_gap=0.6, pad=0.15)
         assert keep == [Interval(0.0, 1.15), Interval(2.85, 5.0)]
 
@@ -33,8 +38,7 @@ class TestKeepIntervals:
         assert keep_intervals([w(0, 1)], 5.0, 5.0) == []
 
     def test_ignores_words_outside_window(self):
-        words = [w(-2.0, -1.0), w(0.0, 0.5), w(0.5, 1.0),
-                 w(3.0, 3.5), w(9.0, 9.5)]
+        words = [w(-2.0, -1.0), w(0.0, 0.5), w(0.5, 1.0), w(3.0, 3.5), w(9.0, 9.5)]
         keep = keep_intervals(words, 0.0, 4.0, min_gap=0.6, pad=0.15)
         assert keep[0].start == 0.0
         assert len(keep) == 2
