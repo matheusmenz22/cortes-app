@@ -16,6 +16,9 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
+# Logs
+*.log
+
 # Mídia / dados gerados (nunca versionar)
 input/
 output/
