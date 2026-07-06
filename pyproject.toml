@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Gerador automático de cortes (Shorts) a partir de conteúdo da Twitch — foco inicial em League of Legends."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "httpx>=0.27",
+]
 
 [project.optional-dependencies]
 dev = [
