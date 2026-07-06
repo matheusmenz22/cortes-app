@@ -143,6 +143,18 @@ pipeline full-auto com esteira de aprovação. n indicado por regra.
    Trim por ação: cortar intro morta, preservar o payoff no fim.
 5. **Seleção de streamer importa** tanto quanto o clip: audiência segue rosto.
 
+## Curadoria: view ≠ momento (06/07)
+
+- **View da Twitch valida INTERESSE, não MOMENTO.** Em streamer grande,
+  qualquer coisa clipa: clip do xQc com 27k views era ele no LOBBY do client
+  mexendo no YouTube (zero gameplay); tyler1 6.6k views = champ select falando.
+  Ordenar por views seleciona STREAMER, não conteúdo. Gate visual (humano ou
+  agente que ASSISTE frames) antes de subir é obrigatório — os dois teriam ido
+  ao ar num pipeline só-views.
+- Fluxo que funcionou: extrair 3 frames do render (15/50/85%) → agente assiste
+  → reescreve título/descrição com o que É visível (citação de fala queimada =
+  ouro) → nega clip sem ação (lobby/menu/conversa) com motivo gravado.
+
 ## Qualidade (aprendido na dor — revolta de 22/06)
 
 - **Título mentiroso = morte.** Clickbait que o vídeo não entrega gera revolta
