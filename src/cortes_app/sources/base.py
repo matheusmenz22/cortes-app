@@ -5,6 +5,7 @@ implementação será a Twitch Clips API (melhores momentos já curados pela
 comunidade); depois uma fonte de VOD (detecção própria via chat/áudio/killfeed)
 pode ser plugada atrás da MESMA interface, sem mexer no resto do app.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

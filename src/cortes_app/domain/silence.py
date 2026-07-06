@@ -8,6 +8,7 @@ fala). É a base do corte fluido de silêncios que melhora a retenção nos Shor
 Puro: sem ffmpeg, sem I/O — 100% testável. A camada de edição consome os
 intervalos e faz o corte/dissolve real do vídeo+áudio.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterable
