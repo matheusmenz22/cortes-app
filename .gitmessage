@@ -1,0 +1,7 @@
+# <tipo>(escopo): <descrição imperativa, ≤72 chars>
+#
+# Corpo: explique o PORQUÊ (não o quê). Quebre em ~72 colunas.
+#
+# Rodapé: BREAKING CHANGE: ...  |  Closes #123
+#
+# Tipos: feat fix docs test refactor chore perf ci build style
