@@ -201,6 +201,21 @@ pipeline full-auto com esteira de aprovação. n indicado por regra.
 - **Clip guarda `videoOffsetSeconds` + `video.id`** no GQL = "Watch Full Video"
   programático: `yt-dlp --download-sections` baixa só a janela do VOD (estender
   clip com contexto antes/depois).
+- **Formato "portrait" do yt-dlp em clip da Twitch**: a Twitch gera versão
+  VERTICAL auto-recortada de alguns clips (webcam gigante em cima, gameplay
+  minúscula embaixo). Ela tem MAIS pixels de altura (ex.: 1242p) e VENCE
+  seletor tipo `-S res` — o pipeline 16:9 recebe um vídeo já vertical e o crop
+  quebra SILENCIOSO: nenhum erro no log, o Short sai com corte absurdo. Fix:
+  excluir o formato no seletor — `-f "b[format_id!*=portrait]/best"` — e só
+  então ordenar entre as landscape com `-S res,fps,vbr`.
+- **Cota grátis de LLM é POR MODELO, não por key**: cada modelo (ex.: gemini
+  flash vs flash-lite) tem balde diário SEPARADO. O 429 tem dois tipos:
+  por-MINUTO (parsear o `retryDelay` do corpo da resposta e esperar — free
+  tier manda ~31s) e DIÁRIO (`PerDay` no corpo / retryDelay >=35s — esperar
+  NÃO recupera). Detectar o 429 diário e pular pro PRÓXIMO modelo de uma
+  CADEIA multiplica o teto grátis — condição pra cadência 10-17/dia sem key
+  paga. Cadeia configurável, não hardcoded: modelo some do dia pra noite
+  (gemini-2.0-flash descontinuado 03/2026).
 
 ## YouTube ops
 
